@@ -10,11 +10,11 @@ You will need to add AFNetworking library to your project if you haven't already
 
 ## How To...
 The first thing we do is set the shared access and secret access keys, another option would be to set these for each individual request.
+
 	NSString *secretAccessKey = @"mySecretKey";
 	NSString *accessKey = @"myAccessKey";
-	
-    [AFS3Request setSharedSecretAccessKey:secretAccessKey];
-    [AFS3Request setSharedAccessKey:accessKey];
+	[AFS3Request setSharedSecretAccessKey:secretAccessKey];
+	[AFS3Request setSharedAccessKey:accessKey];
  
 When you get a response from AWS it will be xml - you will need to parse that yourself!
 
@@ -24,12 +24,20 @@ To list the content of a bucket called mybucket123:
 	AFS3BucketRequest *s3Client = [AFS3BucketRequest requestWithBucket:@"mybucket123"];
 
 	[s3Client enqueRequest:^(AFHTTPRequestOperation *operation, id responseObject) {
-	
         NSLog(@"%@", [operation responseString]); //XML response
-
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-
         NSLog(@"Failed");
-
     }];
     
+##Upload File
+Upload a file called example.txt on your desktop to your bucket with the name example_123.txt
+
+	AFS3ObjectRequest *s3Client = [AFS3ObjectRequest PUTRequestForFile:@"/Users/me/Desktop/example.txt" withBucket:@"mybucket123" key:@"/example_123.txt"];
+	[s3Client enqueRequest:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", [[operation response] allHeaderFields]);//Response Headers
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failed Upload!");
+    }];
+
+
+...More examples soon
